@@ -98,7 +98,7 @@ app.patch('/todos/:id', (req, res) => {   // Update a todo by its id
 })
 
 app.listen(process.env.PORT, () => {
-  console.log('Node-todo API is running on port 3000...');
+  console.log(`Node-todo API is running on port ${process.env.PORT}...`);
 });
 
 module.exports = app;
