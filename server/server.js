@@ -5,9 +5,10 @@ const bodyParser = require('body-parser');
 const ObjectID = require('mongodb').ObjectID;
 const _ = require('lodash');
 
-const { mongoose } = require('./db/mongoose');
+const mongoose = require('./db/mongoose');
 const Todo = require('./models/todo');
 const User = require('./models/user');
+const authenticate = require('./middleware/authenticate');
 
 const app = express();
 
@@ -95,7 +96,27 @@ app.patch('/todos/:id', (req, res) => {   // Update a todo by its id
   }).catch((e) => {
     res.status(400).send();
   })
-})
+});
+
+app.post('/users', (req, res) => {  // Sign up a new user
+  const user = new User({
+    email: req.body.email,
+    password: req.body.password
+  });
+
+  user.save().then(() => {
+    return user.generateAuthToken();
+    // res.send(doc);
+  }).then((token) => {
+    res.header('x-auth', token).send(user); // token is saved in HTTP header 'x-auth' property
+  }).catch((err) => {
+    res.status(400).send(err);
+  });
+});
+
+app.get('/users/me', authenticate, (req, res) => {
+   res.send(req.user);
+});
 
 app.listen(process.env.PORT, () => {
   console.log(`Node-todo API is running on port ${process.env.PORT}...`);
