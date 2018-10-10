@@ -355,3 +355,23 @@ describe('POST /users/login', () => {
     });
   });
 });
+
+describe('DEL /users/me', () => {
+  it('Log out user and clear its token', (done) => {
+    request(app)
+    .delete('/users/me')
+    .set('x-auth', usersForTest[0].tokens[0].token)
+    .expect(200)
+    .end((err, res) => {
+      if(err) {
+        return done(err);
+      }
+      User.findById(usersForTest[0]._id).then((user) => {
+        expect(user.tokens.length).toBe(0);
+        done();
+      }).catch((err) => {
+        return done(err);
+      });
+    });
+  });
+});

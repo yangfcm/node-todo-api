@@ -33,7 +33,7 @@ const UserSchema = new mongoose.Schema({
 });
 
 UserSchema.methods.generateAuthToken = function() {
-  const user = this;  // 'this' erfers to user model
+  const user = this;  // 'this' refers to user model
   const access = 'auth';
   const token = jwt.sign({_id: user._id.toHexString(), access}, 'secret_value').toString();
 
@@ -44,6 +44,17 @@ UserSchema.methods.generateAuthToken = function() {
 
   return user.save().then(() => {
     return token;
+  });
+};
+
+UserSchema.methods.removeToken = function(token) {  // Revmoe the token for a specific user
+  const user = this;
+  return user.update({
+    $pull: {
+      tokens: {
+        token: token
+      }
+    }
   });
 };
 

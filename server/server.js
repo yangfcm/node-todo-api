@@ -129,6 +129,14 @@ app.post('/users/login', (req,res) => {   // User login
   });
 });
 
+app.delete('/users/me', authenticate, (req, res) => {
+  req.user.removeToken(req.token).then(() => {
+    res.status(200).send();
+  }).catch(() => {
+    res.status(400).send();
+  });
+});
+
 app.listen(process.env.PORT, () => {
   console.log(`Node-todo API is running on port ${process.env.PORT}...`);
 });
