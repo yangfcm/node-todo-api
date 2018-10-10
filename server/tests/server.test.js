@@ -15,6 +15,7 @@ describe('POST /todos', () => {   // Test POST /todos
     const taskForTest = 'Test a todo';
     request(app)
       .post('/todos')
+      .set('x-auth', usersForTest[0].tokens[0].token)
       .send({
         task: taskForTest
       })
@@ -29,6 +30,7 @@ describe('POST /todos', () => {   // Test POST /todos
         Todo.find({task: taskForTest}).then((todos) => {
           expect(todos.length).toBe(1);
           expect(todos[0].task).toBe(taskForTest);
+          expect(todos[0]._creator.toHexString()).toBe(usersForTest[0]._id.toHexString());
           done();
         }).catch((err) => {
           return done(err);
@@ -39,6 +41,7 @@ describe('POST /todos', () => {   // Test POST /todos
   it('Fail to create a new todo', (done) => {   // Test failing to create a new todo
     request(app)
       .post('/todos')
+      .set('x-auth', usersForTest[0].tokens[0].token)
       .send({
         task: ''  // Attempt to post an invalid task to make the creation fail
       })
@@ -61,9 +64,10 @@ describe('GET /todos', () => {    // Test GET /todos
   it('Get all todos', (done) => {
     request(app)
       .get('/todos')
+      .set('x-auth', usersForTest[0].tokens[0].token)
       .expect(200)
       .expect((res) => {
-        expect(res.body.todos.length).toBe(2);
+        expect(res.body.todos.length).toBe(1);
       })
       .end(done);
   });
@@ -72,6 +76,7 @@ describe('GET /todos', () => {    // Test GET /todos
     // Test GET /todos/{invalid id}
     request(app)
       .get('/todos/invalid-todo-id')
+      .set('x-auth', usersForTest[0].tokens[0].token)
       .expect(404)
       .expect((res) => {
         expect(res.body).toEqual({});
@@ -84,6 +89,18 @@ describe('GET /todos', () => {    // Test GET /todos
     const randomId = new ObjectID();
     request(app)
       .get(`/todos/${randomId}`)
+      .set('x-auth', usersForTest[0].tokens[0].token)
+      .expect(404)
+      .expect((res) => {
+        expect(res.body).toEqual({})
+      })
+      .end(done);
+  });
+
+  it('Get a todo by id - Attempt to get a todo created by another user', (done) => {
+    request(app)
+      .get(`/todos/${todosForTest[0]._id.toHexString()}`)
+      .set('x-auth', usersForTest[1].tokens[0].token)
       .expect(404)
       .expect((res) => {
         expect(res.body).toEqual({})
@@ -92,23 +109,18 @@ describe('GET /todos', () => {    // Test GET /todos
   });
 
   it('Get a todo by id - Valid id and a todo found', (done) => {
-    // Test Get /todos/{id}
-    Todo.findOne({task: todosForTest[0].task}).then((todo) => {
-      const todoId = todo._id;
-      
-      request(app)
-      .get(`/todos/${todoId}`)
+    request(app)
+      .get(`/todos/${todosForTest[0]._id.toHexString()}`)
+      .set('x-auth', usersForTest[0].tokens[0].token)
       .expect(200)
       .expect((res) => {
         expect(res.body.todo).toInclude({
           task: todosForTest[0].task,
           completed: false,
-          completedAt: null,
-          _id: todoId
+          completedAt: null
         })
       })
       .end(done);
-    });
   });
 });
 
@@ -116,6 +128,7 @@ describe('DEL /todos/:id', () => {  // Test DEL /todos/:id
   it('Delete a todo by id - Invalid id provided', (done) => {
     request(app)
     .del('/todos/invalid-todo-id')
+    .set('x-auth', usersForTest[0].tokens[0].token)
     .expect(404)
     .expect((res) => {
       expect(res.body).toEqual({});
@@ -127,6 +140,7 @@ describe('DEL /todos/:id', () => {  // Test DEL /todos/:id
     const randomId = new ObjectID();
     request(app)
       .del(`/todos/${randomId}`)
+      .set('x-auth', usersForTest[0].tokens[0].token)
       .expect(404)
       .expect((res) => {
         expect(res.body).toEqual({})
@@ -140,6 +154,7 @@ describe('DEL /todos/:id', () => {  // Test DEL /todos/:id
       
       request(app)
       .del(`/todos/${todoId}`)
+      .set('x-auth', usersForTest[0].tokens[0].token)
       .expect(200)
       .expect((res) => {
         expect(res.body.todo).toInclude({
@@ -169,6 +184,7 @@ describe('PATCH /todos/:id', () => {  // test PATCH /todos/:id
       const taskUpdated = 'Updated from testing suite'
       request(app)
       .patch(`/todos/${todoId}`)
+      .set('x-auth', usersForTest[0].tokens[0].token)
       .send({
         task: taskUpdated,
         completed: true
@@ -205,6 +221,7 @@ describe('PATCH /todos/:id', () => {  // test PATCH /todos/:id
       const todoId = todo._id;
       request(app)
       .patch(`/todos/${todoId}`)
+      .set('x-auth', usersForTest[1].tokens[0].token)
       .send({
         completed: false
       })
@@ -321,7 +338,7 @@ describe('POST /users/login', () => {
         return done(err);
       }
       User.findById(usersForTest[1]._id).then((user) => {
-        expect(user.tokens[0]).toInclude({
+        expect(user.tokens[1]).toInclude({
           access: 'auth',
           token: res.headers['x-auth']
         });
@@ -347,7 +364,7 @@ describe('POST /users/login', () => {
         return done(err);
       }
       User.findById(usersForTest[1]._id).then((user) => {
-        expect(user.tokens[0]).toNotExist();
+        expect(user.tokens.length).toBe(1);
         done();
       }).catch((err) => {
         return done(err)

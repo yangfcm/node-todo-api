@@ -4,14 +4,6 @@ const jwt = require('jsonwebtoken');
 const Todo = require('../../models/todo');
 const User = require('../../models/user');
 
-const todosForTest = [{
-  task: 'First test todo'
-}, {
-  task: 'Second test todo',
-  completed: true,
-  completedAt: 123
-}];
-
 const userOneId = new ObjectID();
 const userTwoId = new ObjectID();
 const usersForTest = [{
@@ -25,8 +17,27 @@ const usersForTest = [{
 }, {
   _id: userTwoId,
   email: 'jack@example.com',
-  password: 'userTwoPass'
+  password: 'userTwoPass',
+  tokens: [{
+    access: 'auth',
+    token: jwt.sign({_id: userTwoId, access: 'auth'}, 'secret_value').toString()
+  }]
 }];
+
+const todoOneId = new ObjectID();
+const todoTwoId = new ObjectID();
+const todosForTest = [{
+  _id: todoOneId,
+  task: 'First test todo',
+  _creator: userOneId
+}, {
+  _id: todoTwoId,
+  task: 'Second test todo',
+  completed: true,
+  completedAt: 123,
+  _creator: userTwoId
+}];
+
 
 const populateTodos = (done) => {
   // Clear Todo collection and insert test data before each test case
