@@ -17,6 +17,7 @@ app.use(bodyParser.json());
 app.post('/todos', authenticate, (req, res) => {  // Create a new todo
   const todo = new Todo({
     task: req.body.task,
+    description: req.body.description,
     _creator: req.user._id
   });
 
@@ -101,6 +102,7 @@ app.patch('/todos/:id', authenticate, (req, res) => {   // Update a todo by its 
 
 app.post('/users', (req, res) => {  // Sign up a new user
   const user = new User({
+    username: req.body.username,
     email: req.body.email,
     password: req.body.password
   });

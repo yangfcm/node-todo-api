@@ -5,6 +5,11 @@ const _ = require('lodash');
 const bcrypt = require('bcryptjs');
 
 const UserSchema = new mongoose.Schema({
+  username: {
+    type: String,
+    required: true,
+    trim: true
+  },  
   email: {
     type: String,
     required: true,
@@ -59,10 +64,10 @@ UserSchema.methods.removeToken = function(token) {  // Revmoe the token for a sp
 };
 
 UserSchema.methods.toJSON = function() {  
-  // Overwrite toJSON method only to return _id and email properties of user object
+  // Overwrite toJSON method only to return _id, email and username properties of user object
   const user = this;
   const userObject = user.toObject();
-  return _.pick(userObject, ['_id', 'email']);
+  return _.pick(userObject, ['_id', 'username', 'email']);
 }
 
 UserSchema.statics.findByToken = function(token) {

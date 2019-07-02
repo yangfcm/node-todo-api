@@ -7,6 +7,11 @@ const Todo = mongoose.model('Todo', {
     minlength: [1, 'Task cannot be empty'],
     trim: true
   },
+  description: {
+    type: String,
+    required: true,
+    trim: true
+  },
   completed: {
     type: Boolean,
     default: false
