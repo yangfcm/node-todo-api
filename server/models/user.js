@@ -55,15 +55,17 @@ UserSchema.methods.generateAuthToken = async function() {
   return token;
 };
 
-UserSchema.methods.removeToken = function(token) {  // Revmoe the token for a specific user
+UserSchema.methods.removeToken = async function(token) {  // Remove the token for a specific user
   const user = this;
-  return user.update({
-    $pull: {
-      tokens: {
-        token: token
-      }
-    }
+  if(!token) {
+    user.tokens = [];
+    await user.save();
+    return;
+  }
+  user.tokens = user.tokens.filter((item) => {
+    return item.token !== token
   });
+  await user.save();
 };
 
 UserSchema.methods.toJSON = function() {  
