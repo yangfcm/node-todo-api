@@ -37,19 +37,22 @@ const UserSchema = new mongoose.Schema({
   }]
 });
 
-UserSchema.methods.generateAuthToken = function() {
-  const user = this;  // 'this' refers to user model
+UserSchema.methods.generateAuthToken = async function() {
+  const user = this;  // 'this' refers to user instance
   const access = 'auth';
-  const token = jwt.sign({_id: user._id.toHexString(), access}, process.env.JWT_SECRET).toString();
+  const token = jwt.sign(
+    { _id: user._id.toString(), access }, 
+    process.env.JWT_SECRET,
+    { expiresIn: '7 days'}
+  ).toString();
 
   user.tokens = user.tokens.concat([{
     access, 
     token
   }]);
 
-  return user.save().then(() => {
-    return token;
-  });
+  await user.save();
+  return token;
 };
 
 UserSchema.methods.removeToken = function(token) {  // Revmoe the token for a specific user
@@ -89,22 +92,18 @@ UserSchema.statics.findByToken = function(token) {
   });
 };
 
-UserSchema.statics.findByCredentials = function(email, password) {
+UserSchema.statics.findByCredentials = async function(email, password) {
   const User = this;
-  return User.findOne({email}).then((user) => {
-    if(!user) {
-      return Promise.reject();
-    }
-    return new Promise((resolve, reject) => {
-      bcrypt.compare(password, user.password, (err, res) => {
-        if(res) {
-          resolve(user);
-        } else {
-          reject();
-        }
-      });
-    });
-  });
+  const user = await User.findOne({ email });
+
+  if(!user) {
+    throw new Error('Bad credntials: Fail to login');
+  }
+  const isMatch = await bcrypt.compare(password, user.password);
+  if(!isMatch) {
+    throw new Error('Bad credntials: Fail to login');
+  }
+  return user; 
 };
 
 UserSchema.pre('save', async function(next) {

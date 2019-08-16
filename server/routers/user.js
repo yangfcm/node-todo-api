@@ -34,6 +34,10 @@ router.get('/users', async(req, res) => {
   }
 });
 
+router.get('/users/me', authenticate, (req, res) => {  // Get the current user
+   res.send(req.user);
+});
+
 router.get('/users/:id', async (req, res) => {   // Get a user by id
   const id = req.params.id;
   if(!ObjectID.isValid(id)) {   // Check if id provided is valid
@@ -52,10 +56,6 @@ router.get('/users/:id', async (req, res) => {   // Get a user by id
   }
 })
 
-router.get('/users/me', authenticate, (req, res) => {  // Get the current user
-   res.send(req.user);
-});
-
 router.post('/users/login', async (req,res) => {   // User login
   const body = _.pick(req.body, ['email', 'password']);
   try {
@@ -63,7 +63,7 @@ router.post('/users/login', async (req,res) => {   // User login
     const token = await user.generateAuthToken();
     res.header('x-auth', token).send(user);
   } catch (e) {
-    res.status(400).send(e);
+    res.status(400).send(e.message);
   }
 });
 
