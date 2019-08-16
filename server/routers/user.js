@@ -23,6 +23,17 @@ router.post('/users', async (req, res) => {  // Sign up/Add a new user
   } 
 });
 
+router.get('/users', async(req, res) => {
+  try {
+    const users = await User.find({});
+    res.send({
+      users: users
+    });
+  } catch(e) {
+    res.status(400).send(e);
+  }
+});
+
 router.get('/users/:id', async (req, res) => {   // Get a user by id
   const id = req.params.id;
   if(!ObjectID.isValid(id)) {   // Check if id provided is valid
@@ -67,8 +78,16 @@ router.delete('/users/me', authenticate, async (req, res) => {   // Logout curre
 
 router.patch('/users/:id', async (req, res) => { // Update a user by id 
   const body = _.pick(req.body, ['username', 'email', 'password']);
+  const updateFields = Object.keys(req.body);
   try {
-    const user = await User.findByIdAndUpdate(req.params.id, body, { new: true, runValidators: true }); 
+    const user = await User.findById(req.params.id);
+    
+    updateFields.forEach((field) => {
+      user[field] = body[field];
+    });
+    // const user = await User.findByIdAndUpdate(req.params.id, body, { new: true, runValidators: true }); 
+    await user.save();
+
     if(user) { 
       res.status(200).send(user);
     } else {

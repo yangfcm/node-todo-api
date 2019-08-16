@@ -56,7 +56,7 @@ router.delete('/todos/:id', authenticate, async (req, res) => {  // Delete a tod
   }
 
   try {
-    const todo = Todo.findOneAndRemove({_id: id, _creator: req.user._id});
+    const todo = await Todo.findOneAndRemove({_id: id, _creator: req.user._id});
     if(todo) {
       res.send({todo: todo});
     } else {
@@ -70,6 +70,7 @@ router.delete('/todos/:id', authenticate, async (req, res) => {  // Delete a tod
 router.patch('/todos/:id', authenticate, async (req, res) => {   // Update a todo by its id
   const id = req.params.id;
   const body = _.pick(req.body, ['task', 'description', 'completed', 'completedAt']);
+  const updateFields = Object.keys(req.body);
 
   if(!ObjectID.isValid(id)) {   // Check if id provided is valid
     return res.status(404).send();
@@ -88,7 +89,13 @@ router.patch('/todos/:id', authenticate, async (req, res) => {   // Update a tod
   } 
 
   try {
-    const todo = await Todo.findOneAndUpdate({_id: id, _creator: req.user._id}, {$set: body}, { new: true, runValidators: true });
+    // const todo = await Todo.findOneAndUpdate({_id: id, _creator: req.user._id}, {$set: body}, { new: true, runValidators: true });
+    const todo = await Todo.findOne({_id: id, creator: req.user._id});
+    updateFields.forEach((field) => {
+      todo[field] = body[field];
+    });
+    await todo.save();
+    
     if(todo) {
       res.send({todo: todo});
     } else {
