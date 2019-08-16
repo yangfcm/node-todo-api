@@ -3,6 +3,7 @@ const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 const bcrypt = require('bcryptjs');
+const Todo = require('./todo');
 
 const UserSchema = new mongoose.Schema({
   username: {
@@ -35,6 +36,13 @@ const UserSchema = new mongoose.Schema({
       required: true
     }
   }]
+});
+
+/** Map a user to todos created by the user */
+UserSchema.virtual('todos', {
+  ref: 'Todo',
+  localField: '_id',
+  foreignField: '_creator'
 });
 
 UserSchema.methods.generateAuthToken = async function() {
@@ -120,6 +128,12 @@ UserSchema.pre('save', async function(next) {
     //   });
     // });
   }
+});
+
+// Delete user tasks when the user is deleted
+UserSchema.pre('remove', async function(next) {
+  const user = this; 
+  await Todo.deleteMany({_creator: user._id});
 });
 
 const User = mongoose.model('User', UserSchema);

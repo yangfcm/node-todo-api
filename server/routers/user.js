@@ -19,7 +19,7 @@ router.post('/users', async (req, res) => {  // Sign up/Add a new user
     const token = await user.generateAuthToken();
     res.header('x-auth', token).send(user); // token is saved in HTTP header 'x-auth' property
   } catch(e) {
-    res.status(400).send(e);
+    res.status(400).send(e.message);
   } 
 });
 
@@ -72,7 +72,7 @@ router.post('/users/logout', authenticate, async (req, res) => {   // Logout cur
     await req.user.removeToken(req.token);
     res.status(200).send();
   } catch(e) {
-    res.status(400).send(e);
+    res.status(400).send(e.message);
   } 
 });
 
@@ -81,7 +81,7 @@ router.post('/users/all/logout', authenticate, async(req, res) => {
     await req.user.removeToken();
     res.status(200).send();
   } catch(e) {
-    res.status(400).send(e);
+    res.status(400).send(e.message);
   }
 });
 
@@ -103,7 +103,7 @@ router.patch('/users/me', authenticate, async (req, res) => { // Update current 
       res.status(404).send();
     }
   } catch(e) {
-    res.status(400).send(e);
+    res.status(400).send(e.message);
   }
 });
 
@@ -112,7 +112,7 @@ router.delete('/users/me', authenticate, async (req,res) => {   // Delete curren
     await req.user.remove();
     res.send(req.user);
   } catch(e) {
-    res.status(400).send(e);
+    res.status(400).send(e.message);
   }
 });
 

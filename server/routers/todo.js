@@ -18,16 +18,16 @@ router.post('/todos', authenticate, async (req, res) => {  // Create a new todo
     await todo.save();
     res.send(todo);
   } catch(e) {
-    res.status(400).send(e);
+    res.status(400).send(e.message);
   }
 });
 
-router.get('/todos', authenticate, async (req, res) => { // Get all todos
+router.get('/todos', authenticate, async (req, res) => { // Get all todos by current user
   try {
     const todos = await Todo.find({ _creator: req.user._id });
     res.send({ todos });
   } catch(e) {
-    res.status(400).send(e);
+    res.status(400).send(e.message);
   }
 });
 
@@ -45,7 +45,7 @@ router.get('/todos/:id', authenticate, async (req, res) => {   // Get a todo by 
       res.status(404).send();
     }
   } catch(e) {
-    res.status(400).send(e);
+    res.status(400).send(e.message);
   }
 });
 
@@ -63,7 +63,7 @@ router.delete('/todos/:id', authenticate, async (req, res) => {  // Delete a tod
       res.status(404).send();
     }
   } catch(e) {
-    res.status(400).send(e);
+    res.status(400).send(e.message);
   }
 });
 
@@ -76,24 +76,24 @@ router.patch('/todos/:id', authenticate, async (req, res) => {   // Update a tod
     return res.status(404).send();
   }
 
-  if(body.completed === true) {
-    // If completed property is updated from false to true, then 
-    // automatically update completedAt property to current timestamp.
-    const currentTimeStamp = body.completedAt ? body.completedAt : new Date().getTime();
-    body.completedAt = currentTimeStamp;
-  } 
-  if(body.completed === false) {
-    // Otherwise, set completed property to false and completedAt to null
-    body.completed = false;
-    body.completedAt = null;
-  } 
-
   try {
     // const todo = await Todo.findOneAndUpdate({_id: id, _creator: req.user._id}, {$set: body}, { new: true, runValidators: true });
-    const todo = await Todo.findOne({_id: id, creator: req.user._id});
+    const todo = await Todo.findOne({_id: id, _creator: req.user._id});
     updateFields.forEach((field) => {
       todo[field] = body[field];
     });
+    
+    if(todo.completed === true) {
+      // If completed property is updated from false to true, then 
+      // automatically update completedAt property to current timestamp.
+      const currentTimeStamp = todo.completedAt ? todo.completedAt : new Date().getTime();
+      todo.completedAt = currentTimeStamp;
+    } 
+    if(todo.completed === false) {
+      // Otherwise, set completed property to false and completedAt to null
+      todo.completed = false;
+      todo.completedAt = null;
+    } 
     await todo.save();
     
     if(todo) {
@@ -102,7 +102,7 @@ router.patch('/todos/:id', authenticate, async (req, res) => {   // Update a tod
       res.status(404).send();
     }
   } catch(e) {
-    res.status(400).send(e);
+    res.status(400).send(e.message);
   }
 });
 
