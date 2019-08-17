@@ -23,12 +23,31 @@ router.post('/todos', authenticate, async (req, res) => {  // Create a new todo
 });
 
 router.get('/todos', authenticate, async (req, res) => { // Get all todos by current user
-  try {
-    const todos = await Todo.find({ _creator: req.user._id });
-    res.send({ todos });
+  const match = {};
+  const sort = {};
+  if(req.query.completed) {
+    match.completed = req.query.completed === 'true' ? true : false;
+  }  
+  
+  if(req.query.sortby && req.query.order) {
+    sort[req.query.sortby] = req.query.order === '1' ? 1 : -1;
+      // 1 - ascending, -1 - descending
+  }
+  console.log(sort);
 
-    // await req.user.populate('tasks').execPopulate();
-    // res.send(req.user.tasks);
+  try {
+    // const todos = await Todo.find({ _creator: req.user._id });
+    // res.send({ todos });
+    await req.user.populate({
+      path: 'todos',
+      match,
+      options: {
+        limit: parseInt(req.query.limit),
+        skip: parseInt(req.query.skip),
+        sort
+      }
+    }).execPopulate();
+    res.send(req.user.todos);
   } catch(e) {
     res.status(400).send(e.message);
   }
