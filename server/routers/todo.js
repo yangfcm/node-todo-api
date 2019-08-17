@@ -26,6 +26,9 @@ router.get('/todos', authenticate, async (req, res) => { // Get all todos by cur
   try {
     const todos = await Todo.find({ _creator: req.user._id });
     res.send({ todos });
+
+    // await req.user.populate('tasks').execPopulate();
+    // res.send(req.user.tasks);
   } catch(e) {
     res.status(400).send(e.message);
   }

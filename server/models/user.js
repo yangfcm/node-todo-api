@@ -36,6 +36,8 @@ const UserSchema = new mongoose.Schema({
       required: true
     }
   }]
+}, {
+  timestamps: true
 });
 
 /** Map a user to todos created by the user */

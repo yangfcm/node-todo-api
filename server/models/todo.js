@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const Todo = mongoose.model('Todo', {
+const TodoSchema = new mongoose.Schema({
   task: {
     type: String,
     required: true,
@@ -25,6 +25,10 @@ const Todo = mongoose.model('Todo', {
     required: true,
     ref: 'User'
   }
+}, {
+  timestamps: true
 });
+
+const Todo = mongoose.model('Todo', TodoSchema);
 
 module.exports = Todo;
