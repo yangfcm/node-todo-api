@@ -1,6 +1,8 @@
 const express = require('express');
 // const ObjectID = require('mongodb').ObjectID;
 const _ = require('lodash');
+const multer = require('multer');
+const sharp = require('sharp');
 
 const User = require('../models/user');
 const authenticate = require('../middleware/authenticate');
@@ -116,5 +118,50 @@ router.delete('/users/me', authenticate, async (req,res) => {   // Delete curren
   }
 });
 
+const upload = multer({
+  // dest: 'avatars',
+  limits: {
+    fileSize: 2000000   // maximum file size: 2M
+  },
+  fileFilter(req, file, cb) {
+    if(!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+      return cb(new Error('Please upload an image'));
+    }
+    cb(undefined, true);
+  }
+})
+router.post(
+  '/users/me/avatar', 
+  authenticate,
+  upload.single('avatar'), 
+  async(req, res) => {
+    const buffer = await sharp(req.file.buffer).resize({ width: 250, height: 250 }).png().toBuffer();
+    req.user.avatar = buffer;
+    await req.user.save();
+    res.send();
+  },
+  (err, req, res, next) => {
+    res.status(400).send({error: err.message});
+  }
+);
+
+router.delete('/users/me/avatar', authenticate, async(req, res) => {
+  req.user.avatar = null;
+  await req.user.save();
+  res.send(req.user);
+});
+
+router.get('/users/:id/avatar', async(req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if(!user || !user.avatar) {
+      throw new Error('No avatar for user');
+    }
+    res.set('Content-Type', 'image/png');
+    res.send(user.avatar);
+  } catch(e) {
+    res.status(404).send(e.message);
+  }
+});
 
 module.exports = router;
