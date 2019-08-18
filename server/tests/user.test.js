@@ -2,12 +2,12 @@ const request = require('supertest');
 const User = require('../models/user');
 
 const app = require('../app');
-const { 
-	populateUsers,
-	usersForTest
+const {
+	usersForTest,
+	seed
 } = require('./seed/seed');
 
-beforeEach( populateUsers ); 
+beforeEach(seed);  
 
 const testUser = {
 	username: 'testuser',

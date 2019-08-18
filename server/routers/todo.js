@@ -33,7 +33,7 @@ router.get('/todos', authenticate, async (req, res) => { // Get all todos by cur
     sort[req.query.sortby] = req.query.order === '1' ? 1 : -1;
       // 1 - ascending, -1 - descending
   }
-  console.log(sort);
+  // console.log(sort);
 
   try {
     // const todos = await Todo.find({ _creator: req.user._id });

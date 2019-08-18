@@ -31,31 +31,32 @@ const todoTwoId = new ObjectID();
 const todosForTest = [{
   _id: todoOneId,
   task: 'First test todo',
+  description: 'Description for first todo',
   _creator: userOneId
 }, {
   _id: todoTwoId,
   task: 'Second test todo',
+  description: 'Description for second todo',
   completed: true,
   completedAt: 123,
   _creator: userTwoId
 }];
 
-
-const populateTodos = async () => {
-  // Clear Todo collection and insert test data before each test case
+const seed = async() => {
   await Todo.deleteMany();
-  await Todo.insertMany(todosForTest);
-};
-
-const populateUsers = async() => {
   await User.deleteMany();
+  
+  // await Todo.insertMany(todosForTest);
+  await new Todo(todosForTest[0]).save();
+  await new Todo(todosForTest[1]).save();
   await new User(usersForTest[0]).save();
   await new User(usersForTest[1]).save();
-};
+  // await populateUsers();
+  // await populateTodos();
+}
 
 module.exports = {
   todosForTest, 
-  populateTodos, 
-  usersForTest, 
-  populateUsers
+  usersForTest,
+  seed
 };

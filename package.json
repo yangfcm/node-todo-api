@@ -9,7 +9,7 @@
   "scripts": {
     "start": "node server/server.js",
     "dev": "nodemon server/server.js",
-    "test": "cross-env NODE_ENV=test jest server/tests"
+    "test": "cross-env NODE_ENV=test jest server/tests/ --runInBand"
   },
   "jest": {
     "testEnvironment": "node"
