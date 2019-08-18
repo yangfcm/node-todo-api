@@ -9,8 +9,10 @@
   "scripts": {
     "start": "node server/server.js",
     "dev": "nodemon server/server.js",
-    "test": "cross-env NODE_ENV=test mocha server/**/*.test.js",
-    "test-watch": "nodemon --exec \"npm test\""
+    "test": "cross-env NODE_ENV=test jest server/tests"
+  },
+  "jest": {
+    "testEnvironment": "node"
   },
   "author": "",
   "license": "ISC",
@@ -30,6 +32,7 @@
   },
   "devDependencies": {
     "expect": "^1.20.2",
+    "jest": "^24.9.0",
     "mocha": "^5.2.0",
     "nodemon": "^1.18.4",
     "supertest": "^3.3.0"

@@ -8,6 +8,7 @@ const userOneId = new ObjectID();
 const userTwoId = new ObjectID();
 const usersForTest = [{
   _id: userOneId,
+  username: 'foo',
   email: 'foo@bar.com',
   password: 'userOnePass',
   tokens: [{
@@ -16,6 +17,7 @@ const usersForTest = [{
   }]
 }, {
   _id: userTwoId,
+  username: 'test jack',
   email: 'jack@example.com',
   password: 'userTwoPass',
   tokens: [{
@@ -39,23 +41,21 @@ const todosForTest = [{
 }];
 
 
-const populateTodos = (done) => {
+const populateTodos = async () => {
   // Clear Todo collection and insert test data before each test case
-  Todo.deleteMany({}).then(() => {
-    return Todo.insertMany(todosForTest);
-  }).then(() => {
-    done();
-  });
+  await Todo.deleteMany();
+  await Todo.insertMany(todosForTest);
 };
 
-const populateUsers = (done) => {
-  User.remove({}).then(() => {
-    const userOne = new User(usersForTest[0]).save();
-    const userTwo = new User(usersForTest[1]).save();
-    return Promise.all([userOne, userTwo]);
-  }).then(() => {
-    done();
-  });
+const populateUsers = async() => {
+  await User.deleteMany();
+  await new User(usersForTest[0]).save();
+  await new User(usersForTest[1]).save();
 };
 
-module.exports = {todosForTest, populateTodos, usersForTest, populateUsers};
+module.exports = {
+  todosForTest, 
+  populateTodos, 
+  usersForTest, 
+  populateUsers
+};
