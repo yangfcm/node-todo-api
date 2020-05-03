@@ -30,11 +30,13 @@ Todo REST API built by Node.js/Express.
 {
   "development": {
     "MONGODB_URI": "mongodb+srv://dbuser:<password>@cluster0-bwnpp.mongodb.net/test?retryWrites=true&w=majority",
-    "PORT": "3000"
+    "PORT": "3000",
+    "JWT_SECRET": "secret"
   },
   "test": {
     "MONGODB_URI": "mongodb+srv://dbuser:<password>@cluster0-bwnpp.mongodb.net/test?retryWrites=true&w=majority",
-    "PORT": "3000"
+    "PORT": "3000",
+    "JWT_SECRET": "secret"
   }
 }
 ```
