@@ -122,30 +122,45 @@ const upload = multer({
     cb(undefined, true);
   },
 });
+
+/**
+ * Upload an image as avatar for the current user
+ * */
 router.post(
   "/users/me/avatar",
   authenticate,
   upload.single("avatar"),
   async (req, res) => {
-    const buffer = await sharp(req.file.buffer)
-      .resize({ width: 250, height: 250 })
-      .png()
-      .toBuffer();
-    req.user.avatar = buffer;
-    await req.user.save();
-    res.send();
-  },
-  (err, req, res, next) => {
-    res.status(400).send({ error: err.message });
+    try {
+      const buffer = await sharp(req.file.buffer)
+        .resize({ width: 250, height: 250 })
+        .png()
+        .toBuffer();
+      req.user.avatar = buffer;
+      await req.user.save();
+      res.send();
+    } catch (e) {
+      res.status(400).send(e.message);
+    }
   }
 );
 
+/**
+ * Delete the avatar for the current user
+ * */
 router.delete("/users/me/avatar", authenticate, async (req, res) => {
-  req.user.avatar = null;
-  await req.user.save();
-  res.send(req.user);
+  try {
+    req.user.avatar = null;
+    await req.user.save();
+    res.send(req.user);
+  } catch (e) {
+    res.status(400).send(e.message);
+  }
 });
 
+/**
+ * Get a user's avatar image by id
+ */
 router.get("/users/:id/avatar", async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
