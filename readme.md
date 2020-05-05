@@ -24,19 +24,21 @@ Todo REST API built by Node.js/Express.
   **_Update on 20200503_**
 
 - Rather than installing MongoDB on local machine, you can use [cloud database](https://www.mongodb.com/cloud).
-- Before running, create file `config.json` under `config` directory and set up port and MongoDB URI as below(Make sure change the password to the actual password):
+- Before running, create file `config.json` under `config` directory and set up the parameters used in app, such as port, MongoDB URI, JWT secret and sendgrid token as below(Make sure change the password to the actual password):
 
 ```json
 {
   "development": {
     "MONGODB_URI": "mongodb+srv://dbuser:<password>@cluster0-bwnpp.mongodb.net/test?retryWrites=true&w=majority",
     "PORT": "3000",
-    "JWT_SECRET": "secret"
+    "JWT_SECRET": "secret",
+    "sendgridAPIKey": "Your_sendgrid_api_key"
   },
   "test": {
     "MONGODB_URI": "mongodb+srv://dbuser:<password>@cluster0-bwnpp.mongodb.net/test?retryWrites=true&w=majority",
     "PORT": "3000",
-    "JWT_SECRET": "secret"
+    "JWT_SECRET": "secret",
+    "sendgridAPIKey": "Your_sendgrid_api_key"
   }
 }
 ```
