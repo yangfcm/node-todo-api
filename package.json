@@ -1,41 +1,19 @@
 {
   "name": "todo-api",
   "version": "1.0.0",
-  "engines": {
-    "node": "8.9.3"
-  },
-  "description": "",
+  "description": "Todo REST API built by Node.js/Express.",
   "main": "index.js",
   "scripts": {
-    "start": "node server/server.js",
-    "dev": "nodemon server/server.js",
-    "test": "cross-env NODE_ENV=test jest server/tests/ --runInBand --detectOpenHandles"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "jest": {
-    "testEnvironment": "node"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yangfcm/node-todo-api.git"
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "@sendgrid/mail": "^6.4.0",
-    "bcryptjs": "^2.4.3",
-    "body-parser": "^1.18.3",
-    "cross-env": "^5.2.0",
-    "crypto-js": "^3.1.9-1",
-    "express": "^4.16.3",
-    "jsonwebtoken": "^8.3.0",
-    "lodash": "^4.17.15",
-    "mongodb": "^3.1.6",
-    "mongoose": "^5.6.9",
-    "multer": "^1.4.2",
-    "sharp": "^0.23.0",
-    "validator": "^10.8.0"
+  "bugs": {
+    "url": "https://github.com/yangfcm/node-todo-api/issues"
   },
-  "devDependencies": {
-    "expect": "^1.20.2",
-    "jest": "^24.9.0",
-    "mocha": "^5.2.0",
-    "nodemon": "^1.18.4",
-    "supertest": "^3.3.0"
-  }
+  "homepage": "https://github.com/yangfcm/node-todo-api#readme"
 }
