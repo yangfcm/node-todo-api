@@ -9,14 +9,6 @@ export interface IUser {
   password: string;
 }
 
-export type PostUserData = IUser;
-
-export type UserResponse = {
-  _id: Types.ObjectId;
-  username: string;
-  email: string;
-};
-
 const userSchema = new mongoose.Schema<IUser>({
   email: {
     type: String,

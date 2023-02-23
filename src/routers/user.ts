@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import processError, { AppError } from "../utils/processError";
-import { PostUserData, UserResponse } from "../models/user";
+import { PostUserData, UserResponse } from "../models/userDtos";
 import { saveUser } from "../repositories/user";
 import generateAuthToken from "../utils/generateAuthToken";
 import checkAuth from "../middlewares/checkAuth";
@@ -38,5 +38,7 @@ router.get(
     res.json(req.body.authUser);
   }
 );
+
+router.post("/signin", (req, res) => {});
 
 export default router;

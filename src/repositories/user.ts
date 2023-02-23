@@ -1,4 +1,5 @@
-import User, { PostUserData, UserResponse } from "../models/user";
+import User from "../models/user";
+import { PostUserData, UserResponse } from "../models/userDtos";
 
 export const saveUser = async (user: PostUserData): Promise<UserResponse> => {
   const newUser = new User(user);
