@@ -3,6 +3,7 @@ import processError, { AppError } from "../utils/processError";
 import { PostUserData, UserResponse } from "../models/user";
 import { saveUser } from "../repositories/user";
 import generateAuthToken from "../utils/generateAuthToken";
+import checkAuth from "../middlewares/checkAuth";
 
 const router = Router();
 
@@ -27,6 +28,14 @@ router.post(
     } catch (e: any) {
       res.status(400).send(processError(e));
     }
+  }
+);
+
+router.get(
+  "/auth",
+  checkAuth,
+  (req: Request<any, any, { authUser?: UserResponse }>, res) => {
+    res.json(req.body.authUser);
   }
 );
 
