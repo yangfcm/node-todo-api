@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { USERNAME_IS_REQUIRED, EMAIL_IS_REQUIRED } from "../config/constants";
+import { isValidEmail } from "../utils/validators";
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -7,6 +8,10 @@ const userSchema = new mongoose.Schema({
     trim: true,
     required: [true, EMAIL_IS_REQUIRED],
     unique: true,
+    validate: {
+      validator: (value: string) => isValidEmail(value),
+      message: "{VALUE} is not a valid email.",
+    },
   },
   username: {
     type: String,
