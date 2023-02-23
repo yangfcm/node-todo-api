@@ -2,11 +2,13 @@ import mongoose, { Document } from "mongoose";
 import bcrypt from "bcryptjs";
 import { USERNAME_IS_REQUIRED, EMAIL_IS_REQUIRED } from "../config/constants";
 import { isValidEmail } from "../utils/validators";
+import { UserResponse } from "./userDtos";
 
 export interface IUser extends Document {
   email: string;
   username: string;
   password: string;
+  toUserResponse: () => UserResponse;
 }
 
 const userSchema = new mongoose.Schema<IUser>({
@@ -35,6 +37,15 @@ userSchema.pre("save", async function () {
     user.password = await bcrypt.hash(user.password, 8);
   }
 });
+
+userSchema.methods.toUserResponse = function (): UserResponse {
+  const user = this;
+  return {
+    _id: user._id,
+    email: user.email,
+    username: user.username,
+  };
+};
 
 const User = mongoose.model<IUser>("User", userSchema);
 

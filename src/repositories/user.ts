@@ -7,11 +7,7 @@ export const saveUser = async (user: PostUserData): Promise<UserResponse> => {
   const newUser = new User(user);
   await newUser.save();
 
-  return {
-    _id: newUser._id,
-    username: newUser.username,
-    email: newUser.email,
-  };
+  return newUser.toUserResponse();
 };
 
 export const findUserByCredentials = async (
@@ -22,5 +18,5 @@ export const findUserByCredentials = async (
   if (!user) throw new Error(BAD_CREDENTIALS);
   const isPasswordMatch = await bcrypt.compare(password, user.password);
   if (!isPasswordMatch) throw new Error(BAD_CREDENTIALS);
-  return user;
+  return user.toUserResponse();
 };
