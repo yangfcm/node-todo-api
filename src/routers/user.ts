@@ -1,5 +1,6 @@
 import { Router, Request } from "express";
 import User from "../models/user";
+import processError from "../utils/processError";
 
 const router = Router();
 
@@ -19,13 +20,7 @@ router.post("/", async (req, res) => {
     await user.save();
     res.send("ok");
   } catch (e: any) {
-    console.log(e);
-    res.status(400).send({
-      message: e.message,
-      name: e.name,
-      code: e.code,
-      error: e.errors,
-    });
+    res.status(400).send(processError(e));
   }
 });
 
