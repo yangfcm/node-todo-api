@@ -1,8 +1,22 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 import { USERNAME_IS_REQUIRED, EMAIL_IS_REQUIRED } from "../config/constants";
 import { isValidEmail } from "../utils/validators";
 
-const userSchema = new mongoose.Schema({
+export interface IUser {
+  email: string;
+  username: string;
+  password: string;
+}
+
+export type PostUserData = IUser;
+
+export type UserResponse = {
+  _id: Types.ObjectId;
+  username: string;
+  email: string;
+};
+
+const userSchema = new mongoose.Schema<IUser>({
   email: {
     type: String,
     trim: true,
@@ -22,6 +36,6 @@ const userSchema = new mongoose.Schema({
   password: String,
 });
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model<IUser>("User", userSchema);
 
 export default User;

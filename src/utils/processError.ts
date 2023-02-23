@@ -1,8 +1,8 @@
 import { DEFAULT_ERROR_MESSAGE } from "../config/constants";
 
-type AppError = {
+export type AppError = {
   message: string;
-  name?: string;
+  name?: "MongoServerError" | "ValidationError" | string;
   errors?: Record<
     string,
     { name: string; message: string; kind: string; path: string; value: string }
