@@ -4,6 +4,7 @@ import { USERNAME_IS_REQUIRED, EMAIL_IS_REQUIRED } from "../config/constants";
 import { isValidEmail } from "../utils/validators";
 
 export interface IUser {
+  _id: Types.ObjectId;
   email: string;
   username: string;
   password: string;

@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import processError, { AppError } from "../utils/processError";
-import { PostUserData, UserResponse } from "../models/userDtos";
-import { saveUser } from "../repositories/user";
+import { LoginUser, PostUserData, UserResponse } from "../models/userDtos";
+import { findUserByCredentials, saveUser } from "../repositories/user";
 import generateAuthToken from "../utils/generateAuthToken";
 import checkAuth from "../middlewares/checkAuth";
 
@@ -39,6 +39,24 @@ router.get(
   }
 );
 
-router.post("/signin", (req, res) => {});
+router.post(
+  "/login",
+  async (
+    req: Request<any, any, LoginUser>,
+    res: Response<AppError | UserResponse>
+  ) => {
+    try {
+      const user = await findUserByCredentials(req.body);
+      const token = generateAuthToken({
+        _id: user._id.toString(),
+        email: user.email,
+        username: user.username,
+      });
+      return res.header("X-Auth", token).json(user);
+    } catch (e: any) {
+      res.status(400).send(processError(e));
+    }
+  }
+);
 
 export default router;
