@@ -1,4 +1,5 @@
 import mongoose, { Types } from "mongoose";
+import bcrypt from "bcryptjs";
 import { USERNAME_IS_REQUIRED, EMAIL_IS_REQUIRED } from "../config/constants";
 import { isValidEmail } from "../utils/validators";
 
@@ -34,6 +35,13 @@ const userSchema = new mongoose.Schema<IUser>({
     unique: true,
   },
   password: String,
+});
+
+userSchema.pre("save", async function () {
+  const user = this;
+  if (user.isModified("password")) {
+    user.password = await bcrypt.hash(user.password, 8);
+  }
 });
 
 const User = mongoose.model<IUser>("User", userSchema);
