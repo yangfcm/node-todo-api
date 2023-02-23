@@ -1,10 +1,9 @@
-import mongoose, { Types } from "mongoose";
+import mongoose, { Document } from "mongoose";
 import bcrypt from "bcryptjs";
 import { USERNAME_IS_REQUIRED, EMAIL_IS_REQUIRED } from "../config/constants";
 import { isValidEmail } from "../utils/validators";
 
-export interface IUser {
-  _id: Types.ObjectId;
+export interface IUser extends Document {
   email: string;
   username: string;
   password: string;
