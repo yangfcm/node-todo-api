@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { DEFAULT_JWT_TOKEN, INVALID_TOKEN } from "../config/constants";
 import User from "../models/user";
-import processError from "../utils/processError";
+import errorToJson from "../utils/errorToJson";
 
 const checkAuth = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -27,7 +27,7 @@ const checkAuth = async (req: Request, res: Response, next: NextFunction) => {
     req.body.authUser = user;
     next();
   } catch (error: any) {
-    res.status(401).json(processError(error));
+    res.status(401).json(errorToJson(error));
   }
 };
 

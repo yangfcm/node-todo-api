@@ -5,11 +5,17 @@ export type AppError = {
   name?: string;
   errors?: Record<
     string,
-    { name: string; message: string; kind: string; path: string; value: string }
+    {
+      name?: string;
+      message?: string;
+      kind?: string;
+      path?: string;
+      value?: string;
+    }
   >;
 };
 
-function processError(error: any): AppError {
+function errorToJson(error: any): AppError {
   const appError: AppError = {
     message: error.message || DEFAULT_ERROR_MESSAGE,
   };
@@ -18,4 +24,4 @@ function processError(error: any): AppError {
   return appError;
 }
 
-export default processError;
+export default errorToJson;

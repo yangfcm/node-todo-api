@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import processError, { AppError } from "../utils/processError";
+import errorToJson, { AppError } from "../utils/errorToJson";
 import { LoginUser, PostUserData, UserResponse } from "../models/userDtos";
 import { findUserByCredentials, saveUser } from "../repositories/user";
 import generateAuthToken from "../utils/generateAuthToken";
@@ -22,7 +22,7 @@ router.post(
       const token = generateAuthToken(newUser);
       res.header("X-Auth", token).json(newUser);
     } catch (e: any) {
-      res.status(400).send(processError(e));
+      res.status(400).send(errorToJson(e));
     }
   }
 );
@@ -46,7 +46,7 @@ router.post(
       const token = generateAuthToken(user);
       return res.header("X-Auth", token).json(user);
     } catch (e: any) {
-      res.status(400).send(processError(e));
+      res.status(401).send(errorToJson(e));
     }
   }
 );
