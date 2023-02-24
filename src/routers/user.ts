@@ -19,11 +19,7 @@ router.post(
   ) => {
     try {
       const newUser = await saveUser(req.body);
-      const token = generateAuthToken({
-        _id: newUser._id.toString(),
-        email: newUser.email,
-        username: newUser.username,
-      });
+      const token = generateAuthToken(newUser);
       res.header("X-Auth", token).json(newUser);
     } catch (e: any) {
       res.status(400).send(processError(e));
@@ -47,11 +43,7 @@ router.post(
   ) => {
     try {
       const user = await findUserByCredentials(req.body);
-      const token = generateAuthToken({
-        _id: user._id.toString(),
-        email: user.email,
-        username: user.username,
-      });
+      const token = generateAuthToken(user);
       return res.header("X-Auth", token).json(user);
     } catch (e: any) {
       res.status(400).send(processError(e));
