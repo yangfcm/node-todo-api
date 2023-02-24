@@ -2,7 +2,11 @@ import { Error } from "mongoose";
 import bcrypt from "bcryptjs";
 import User from "../models/user";
 import { LoginUser, PostUserData, UserResponse } from "../models/userDtos";
-import { BAD_CREDENTIALS } from "../config/constants";
+import {
+  BAD_CREDENTIALS,
+  EMAIL_EXISTS,
+  USERNAME_EXISTS,
+} from "../config/constants";
 
 export const saveUser = async (user: PostUserData): Promise<UserResponse> => {
   const { email, username } = user;
@@ -14,7 +18,7 @@ export const saveUser = async (user: PostUserData): Promise<UserResponse> => {
     validationError.addError("email", {
       path: "email",
       value: email,
-      message: "Email already exists",
+      message: EMAIL_EXISTS,
     } as Error.ValidatorError);
     throw validationError;
   }
@@ -23,7 +27,7 @@ export const saveUser = async (user: PostUserData): Promise<UserResponse> => {
     validationError.addError("username", {
       path: "username",
       value: username,
-      message: "Username already exists.",
+      message: USERNAME_EXISTS,
     } as Error.ValidatorError);
     throw validationError;
   }
