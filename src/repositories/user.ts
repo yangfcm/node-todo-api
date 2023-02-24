@@ -1,9 +1,33 @@
+import { Error } from "mongoose";
 import bcrypt from "bcryptjs";
 import User from "../models/user";
 import { LoginUser, PostUserData, UserResponse } from "../models/userDtos";
 import { BAD_CREDENTIALS } from "../config/constants";
 
 export const saveUser = async (user: PostUserData): Promise<UserResponse> => {
+  const { email, username } = user;
+  const sameEmailUser = await User.findOne({ email });
+  const sameUsernameUser = await User.findOne({ username });
+
+  const validationError = new Error.ValidationError();
+  if (sameEmailUser) {
+    validationError.addError("email", {
+      path: "email",
+      value: email,
+      message: "Email already exists",
+    } as Error.ValidatorError);
+    throw validationError;
+  }
+
+  if (sameUsernameUser) {
+    validationError.addError("username", {
+      path: "username",
+      value: username,
+      message: "Username already exists.",
+    } as Error.ValidatorError);
+    throw validationError;
+  }
+
   const newUser = new User(user);
   await newUser.save();
 
