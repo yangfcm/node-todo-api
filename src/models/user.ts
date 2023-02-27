@@ -2,7 +2,7 @@ import mongoose, { Document } from "mongoose";
 import bcrypt from "bcryptjs";
 import { USERNAME_IS_REQUIRED, EMAIL_IS_REQUIRED } from "../config/constants";
 import { isValidEmail } from "../utils/validators";
-import { UserResponse } from "./userDtos";
+import { UserResponse } from "../dtos/user";
 
 export interface IUser extends Document {
   email: string;

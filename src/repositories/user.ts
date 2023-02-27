@@ -1,7 +1,7 @@
 import { Error } from "mongoose";
 import bcrypt from "bcryptjs";
 import User from "../models/user";
-import { LoginUser, PostUserData, UserResponse } from "../models/userDtos";
+import { LoginUser, PostUserData, UserResponse } from "../dtos/user";
 import {
   BAD_CREDENTIALS,
   EMAIL_EXISTS,

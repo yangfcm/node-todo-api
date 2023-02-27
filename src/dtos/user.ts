@@ -1,5 +1,5 @@
 import mongoose, { Types } from "mongoose";
-import { IUser } from "./user";
+import { IUser } from "../models/user";
 
 export type PostUserData = {
   email: IUser["email"];

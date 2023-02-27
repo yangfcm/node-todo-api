@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import errorToJson, { AppError } from "../utils/errorToJson";
-import { LoginUser, PostUserData, UserResponse } from "../models/userDtos";
+import { LoginUser, PostUserData, UserResponse } from "../dtos/user";
 import { findUserByCredentials, saveUser } from "../repositories/user";
 import generateAuthToken from "../utils/generateAuthToken";
 import checkAuth from "../middlewares/checkAuth";
