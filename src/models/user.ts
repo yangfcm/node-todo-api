@@ -1,4 +1,4 @@
-import mongoose, { Document } from "mongoose";
+import mongoose, { Document, Schema } from "mongoose";
 import bcrypt from "bcryptjs";
 import { USERNAME_IS_REQUIRED, EMAIL_IS_REQUIRED } from "../config/constants";
 import { isValidEmail } from "../utils/validators";
@@ -10,6 +10,7 @@ export interface IUser extends Document {
   password: string;
   created_at: Date;
   updated_at: Date;
+  tasks: string[];
   toUserResponse: () => UserResponse;
 }
 
@@ -32,6 +33,7 @@ const userSchema = new mongoose.Schema<IUser>(
       unique: true,
     },
     password: String,
+    tasks: [{ type: Schema.Types.ObjectId, ref: "Task" }],
   },
   {
     timestamps: {
