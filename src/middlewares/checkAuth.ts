@@ -24,7 +24,7 @@ const checkAuth = async (req: Request, res: Response, next: NextFunction) => {
     });
     if (!user) throw new Error(INVALID_TOKEN); // Check if user matches the token.
 
-    req.body.authUser = user;
+    req.body.authUser = user.toUserResponse();
     next();
   } catch (error: any) {
     res.status(401).json(errorToJson(error));
