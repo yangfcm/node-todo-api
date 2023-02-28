@@ -2,7 +2,7 @@ import { Router, Request, Response } from "express";
 import { PostTaskData, TaskResponse } from "../dtos/task";
 import { UserResponse } from "../dtos/user";
 import checkAuth from "../middlewares/checkAuth";
-import { getTasksByUserId, saveTask } from "../repositories/task";
+import { getTasks, saveTask } from "../repositories/task";
 import errorToJson, { AppError } from "../utils/errorToJson";
 
 const router = Router();
@@ -39,7 +39,8 @@ router.get(
       const user = req.body.authUser;
       const { completed } = req.query || {};
 
-      const tasks = await getTasksByUserId(user._id, {
+      const tasks = await getTasks({
+        userId: user._id,
         completed: completed as string,
       });
       res.json(tasks);

@@ -11,15 +11,17 @@ export const saveTask = async (
   return newTask.toTaskResponse();
 };
 
-export const getTasksByUserId = async (
-  userId: string,
+export const getTasks = async (
   options: {
+    userId?: string;
     completed?: string;
   } = {}
 ): Promise<TaskResponse[]> => {
-  const tasks = await Task.find({
-    owner: userId,
-  });
-  const { completed } = options;
+  const { userId, completed } = options;
+  const match: Record<string, string | number | boolean> = {};
+  if (userId) match.owner = userId;
+  if (completed === "1") match.completed = true;
+  if (completed === "0") match.completed = false;
+  const tasks = await Task.find(match);
   return tasks.map((task) => task.toTaskResponse());
 };
