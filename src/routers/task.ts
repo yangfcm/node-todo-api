@@ -2,7 +2,6 @@ import { Router, Request, Response } from "express";
 import { PostTaskData, TaskResponse } from "../dtos/task";
 import { UserResponse } from "../dtos/user";
 import checkAuth from "../middlewares/checkAuth";
-import Task from "../models/task";
 import { getTasksByUserId, saveTask } from "../repositories/task";
 import errorToJson, { AppError } from "../utils/errorToJson";
 
