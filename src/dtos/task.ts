@@ -13,6 +13,7 @@ export type TaskResponse = {
   owner: ITask["owner"];
   due_at: ITask["due_at"];
   completed_at: ITask["completed_at"];
+  completed: ITask["completed"];
   created_at: ITask["created_at"];
   updated_at: ITask["updated_at"];
 };

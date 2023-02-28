@@ -37,7 +37,11 @@ router.get(
   ) => {
     try {
       const user = req.body.authUser;
-      const tasks = await getTasksByUserId(user._id);
+      const { completed } = req.query || {};
+
+      const tasks = await getTasksByUserId(user._id, {
+        completed: completed as string,
+      });
       res.json(tasks);
     } catch (e) {
       res.status(400).send(errorToJson(e));

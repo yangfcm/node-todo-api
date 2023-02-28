@@ -12,6 +12,7 @@ export interface ITask extends Document {
   description?: string;
   due_at: Date;
   completed_at?: Date;
+  completed: boolean;
   owner: String;
   created_at: Date;
   updated_at: Date;
@@ -33,6 +34,12 @@ const taskSchema = new mongoose.Schema<ITask>(
       required: [true, TASK_DUE_DATE_REQUIRED],
     },
     completed_at: Date,
+    completed: {
+      type: Boolean,
+      default: function () {
+        return !!this.completed_at;
+      },
+    },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
@@ -55,6 +62,7 @@ taskSchema.methods.toTaskResponse = function (): TaskResponse {
     description: task.description || "",
     due_at: task.due_at,
     completed_at: task.completed_at,
+    completed: task.completed,
     created_at: task.created_at,
     updated_at: task.updated_at,
     owner: task.owner,
