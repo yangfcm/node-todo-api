@@ -5,6 +5,7 @@ import {
   TASK_TITLE_MAX_LENGTH,
   TASK_TITLE_TOO_LONG,
 } from "../config/constants";
+import { TaskResponse } from "../dtos/task";
 
 export interface ITask extends Document {
   title: string;
@@ -14,6 +15,7 @@ export interface ITask extends Document {
   owner: String;
   created_at: Date;
   updated_at: Date;
+  toTaskResponse: () => TaskResponse;
 }
 
 const taskSchema = new mongoose.Schema<ITask>(
@@ -44,6 +46,20 @@ const taskSchema = new mongoose.Schema<ITask>(
     },
   }
 );
+
+taskSchema.methods.toTaskResponse = function (): TaskResponse {
+  const task = this;
+  return {
+    _id: task._id,
+    title: task.title,
+    description: task.description || "",
+    due_at: task.due_at,
+    completed_at: task.completed_at,
+    created_at: task.created_at,
+    updated_at: task.updated_at,
+    owner: task.owner,
+  };
+};
 
 const Task = mongoose.model<ITask>("Task", taskSchema);
 
