@@ -5,6 +5,7 @@ import checkAuth from "../middlewares/checkAuth";
 import {
   getTaskById,
   getTasks,
+  getUserHasTask,
   saveTask,
   updateTask,
 } from "../repositories/task";
@@ -86,8 +87,12 @@ router.put(
     try {
       const { id } = req.params;
       const { authUser, task } = req.body;
+      const userHasTask = await getUserHasTask(authUser._id, id);
+      if (!userHasTask) return res.status(404).send();
+
       const updatedTask = await updateTask(id, task);
       if (!updatedTask) res.status(404).send();
+
       res.json(updatedTask);
     } catch (e) {
       res.status(400).send(errorToJson(e));

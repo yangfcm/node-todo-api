@@ -38,6 +38,18 @@ export const getTaskById = async (
   return task?.toTaskResponse();
 };
 
+export const getUserHasTask = async (
+  userId: string,
+  taskId: string
+): Promise<boolean> => {
+  if (!isValidId(userId) || !isValidId(taskId)) return false;
+  const task = await Task.findOne({
+    _id: taskId,
+    owner: userId,
+  });
+  return !!task;
+};
+
 export const updateTask = async (
   id: string,
   task: PutTaskData
