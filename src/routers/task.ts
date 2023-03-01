@@ -1,8 +1,13 @@
 import { Router, Request, Response } from "express";
-import { PostTaskData, TaskResponse } from "../dtos/task";
+import { PostTaskData, PutTaskData, TaskResponse } from "../dtos/task";
 import { UserResponse } from "../dtos/user";
 import checkAuth from "../middlewares/checkAuth";
-import { getTaskById, getTasks, saveTask } from "../repositories/task";
+import {
+  getTaskById,
+  getTasks,
+  saveTask,
+  updateTask,
+} from "../repositories/task";
 import errorToJson, { AppError } from "../utils/errorToJson";
 
 const router = Router();
@@ -61,6 +66,29 @@ router.get(
       const task = await getTaskById(id);
       if (!task) return res.status(404).send();
       res.json(task);
+    } catch (e) {
+      res.status(400).send(errorToJson(e));
+    }
+  }
+);
+
+router.put(
+  "/:id",
+  checkAuth,
+  async (
+    req: Request<
+      { id: string },
+      any,
+      { authUser: UserResponse; task: PutTaskData }
+    >,
+    res: Response<AppError | TaskResponse | undefined>
+  ) => {
+    try {
+      const { id } = req.params;
+      const { authUser, task } = req.body;
+      const updatedTask = await updateTask(id, task);
+      if (!updatedTask) res.status(404).send();
+      res.json(updatedTask);
     } catch (e) {
       res.status(400).send(errorToJson(e));
     }

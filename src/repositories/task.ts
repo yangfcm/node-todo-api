@@ -1,3 +1,4 @@
+import { Error } from "mongoose";
 import { PostTaskData, TaskResponse, PutTaskData } from "../dtos/task";
 import { UserResponse } from "../dtos/user";
 import Task from "../models/task";
@@ -47,10 +48,26 @@ export const updateTask = async (
   });
   if (!taskToUpdate) return;
 
-  // @TODO: Update task.
-  // for (const [key, value] of Object.entries(task)) {
-  //   console.log(taskToUpdate[key]);
-  // }
+  if (task.title?.trim()) taskToUpdate.title = task.title.trim();
+  if (task.description) taskToUpdate.description = task.description;
+  if (task.due_at) taskToUpdate.due_at = task.due_at;
+
+  if (task.completed === true && !task.completed_at) {
+    taskToUpdate.completed = true;
+    taskToUpdate.completed_at = new Date();
+  }
+  if (task.completed === false && !task.completed_at) {
+    taskToUpdate.completed = false;
+    taskToUpdate.completed_at = undefined;
+  }
+
+  if (task.completed_at) {
+    taskToUpdate.completed_at = task.completed_at;
+    if (task.completed === false)
+      // You can's specify completed_at while setting completed at false.
+      throw new Error('Invalid data: "completed_at" and "completed"');
+    taskToUpdate.completed = true;
+  }
 
   const updatedTask = await taskToUpdate.save();
 
