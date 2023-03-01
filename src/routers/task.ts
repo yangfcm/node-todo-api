@@ -2,7 +2,7 @@ import { Router, Request, Response } from "express";
 import { PostTaskData, TaskResponse } from "../dtos/task";
 import { UserResponse } from "../dtos/user";
 import checkAuth from "../middlewares/checkAuth";
-import { getTasks, saveTask } from "../repositories/task";
+import { getTaskById, getTasks, saveTask } from "../repositories/task";
 import errorToJson, { AppError } from "../utils/errorToJson";
 
 const router = Router();
@@ -49,5 +49,16 @@ router.get(
     }
   }
 );
+
+router.get("/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const task = await getTaskById(id);
+    if (!task) return res.status(404).send({});
+    res.json(task);
+  } catch (e) {
+    res.status(400).send(errorToJson(e));
+  }
+});
 
 export default router;

@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { PostTaskData, TaskResponse } from "../dtos/task";
 import { UserResponse } from "../dtos/user";
 import Task from "../models/task";
@@ -24,4 +25,14 @@ export const getTasks = async (
   if (completed === "0") match.completed = false;
   const tasks = await Task.find(match);
   return tasks.map((task) => task.toTaskResponse());
+};
+
+export const getTaskById = async (
+  id: string
+): Promise<TaskResponse | undefined> => {
+  if (!ObjectId.isValid(id)) return;
+  const task = await Task.findOne({
+    _id: id,
+  });
+  return task?.toTaskResponse();
 };
