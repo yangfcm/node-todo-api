@@ -64,6 +64,20 @@ Assume base url is `http://localhost:3000`
 - _DELETE_ /users/me/avatar - Delete current user's avatar image
 - _GET_ /users/:id/avatar - Get user's avatar image by id
 
+## Docker
+
+- Build image
+
+```
+$ docker build -t todoapi .
+```
+
+- Run docker
+
+```
+$ docker run -p 3000:3000 todoapi
+```
+
 ## Development Environment
 
 - Node.js 8.9.3
