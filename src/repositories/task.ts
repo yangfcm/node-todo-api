@@ -1,7 +1,7 @@
-import { ObjectId } from "mongodb";
-import { PostTaskData, TaskResponse } from "../dtos/task";
+import { PostTaskData, TaskResponse, PutTaskData } from "../dtos/task";
 import { UserResponse } from "../dtos/user";
 import Task from "../models/task";
+import { isValidId } from "../utils/validators";
 
 export const saveTask = async (
   task: PostTaskData,
@@ -30,9 +30,29 @@ export const getTasks = async (
 export const getTaskById = async (
   id: string
 ): Promise<TaskResponse | undefined> => {
-  if (!ObjectId.isValid(id)) return;
+  if (!isValidId(id)) return;
   const task = await Task.findOne({
     _id: id,
   });
   return task?.toTaskResponse();
+};
+
+export const updateTask = async (
+  id: string,
+  task: PutTaskData
+): Promise<TaskResponse | undefined> => {
+  if (!isValidId(id)) return;
+  const taskToUpdate = await Task.findOne({
+    _id: id,
+  });
+  if (!taskToUpdate) return;
+
+  // @TODO: Update task.
+  // for (const [key, value] of Object.entries(task)) {
+  //   console.log(taskToUpdate[key]);
+  // }
+
+  const updatedTask = await taskToUpdate.save();
+
+  return updatedTask.toTaskResponse();
 };
