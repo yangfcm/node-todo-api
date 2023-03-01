@@ -50,15 +50,21 @@ router.get(
   }
 );
 
-router.get("/:id", async (req, res) => {
-  try {
-    const id = req.params.id;
-    const task = await getTaskById(id);
-    if (!task) return res.status(404).send({});
-    res.json(task);
-  } catch (e) {
-    res.status(400).send(errorToJson(e));
+router.get(
+  "/:id",
+  async (
+    req: Request<{ id: string }>,
+    res: Response<AppError | TaskResponse | undefined>
+  ) => {
+    try {
+      const id = req.params.id;
+      const task = await getTaskById(id);
+      if (!task) return res.status(404).send();
+      res.json(task);
+    } catch (e) {
+      res.status(400).send(errorToJson(e));
+    }
   }
-});
+);
 
 export default router;
