@@ -6,6 +6,7 @@ import {
   TASK_TITLE_TOO_LONG,
 } from "../config/constants";
 import { TaskResponse } from "../dtos/task";
+import { IUser } from "./user";
 
 export interface ITask extends Document {
   title: string;
@@ -13,7 +14,7 @@ export interface ITask extends Document {
   due_at: Date;
   completed_at?: Date;
   completed: boolean;
-  owner: String;
+  owner: String | IUser;
   created_at: Date;
   updated_at: Date;
   toTaskResponse: () => TaskResponse;
@@ -65,7 +66,7 @@ taskSchema.methods.toTaskResponse = function (): TaskResponse {
     completed: task.completed,
     created_at: task.created_at,
     updated_at: task.updated_at,
-    owner: task.owner,
+    owner: task.owner.toUserResponse ? task.owner.toUserResponse() : task.owner,
   };
 };
 

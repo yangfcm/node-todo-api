@@ -34,7 +34,7 @@ export const getTaskById = async (
   if (!isValidId(id)) return;
   const task = await Task.findOne({
     _id: id,
-  });
+  }).populate("owner");
   return task?.toTaskResponse();
 };
 
