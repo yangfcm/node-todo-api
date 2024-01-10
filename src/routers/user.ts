@@ -30,7 +30,10 @@ router.post(
 router.get(
   "/auth",
   checkAuth,
-  (req: Request<any, any, { authUser?: UserResponse }>, res) => {
+  (
+    req: Request<any, any, { authUser?: UserResponse }>,
+    res: Response<UserResponse>
+  ) => {
     res.json(req.body.authUser);
   }
 );
