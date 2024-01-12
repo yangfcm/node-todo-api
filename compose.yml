@@ -14,3 +14,4 @@ services:
           action: sync
           ignore:
             - node_modules/
+            - .git/
