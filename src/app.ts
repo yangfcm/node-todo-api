@@ -13,10 +13,10 @@ connectDB(MONGODB_CONNECTION_URI); // Connect DB.
 const app = express(); // Start server.
 
 app.use(bodyParser.json());
-app.get("/", (req, res) => {
+app.get("/todo-api", (req, res) => {
   res.send("App is running");
 });
-app.use("/users", userRouter);
-app.use("/tasks", taskRouter);
+app.use("/todo-api/users", userRouter);
+app.use("/todo-api/tasks", taskRouter);
 
 export default app;
